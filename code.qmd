@@ -5,6 +5,8 @@ format: pdf
 ---
 
 ```{r}
+
+
 library(tidyverse)
 library(broom)
 library(glm2)
@@ -13,9 +15,31 @@ library(Stat2Data)
 library(pROC)
 library(yardstick)
 library(ggplot2)
+library(janitor)
+library(here)
+library(fs)
+library(withr)
+
 #edu <- read.csv("data/english_education.csv")
 edu <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-01-23/english_education.csv')
 
+
+
+working_dir <- here::here("data")
+
+xls_path <- withr::local_tempfile(fileext = ".xlsx")
+download.file(
+  "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/educationandchildcare/datasets/educationalattainmentofyoungpeopleinenglishtownsdata/200708201819/youngpeoplesattainmentintownsreferencetable1.xlsx",
+  xls_path,
+  mode = "wb"
+)
+
+english_education <- readxl::read_xlsx(xls_path, sheet = "Data", na = "*") |> 
+  janitor::clean_names()
+
+readr::write_csv(
+  english_education,
+  fs::path(working_dir, "english_education.csv"))
 ```
 
 ```{r}
@@ -25,11 +49,11 @@ edu <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytu
 edu <- edu %>%
   mutate(log_odds_ks4asy = log(key_stage_4_attainment_school_year_2012_to_2013 / (1 - key_stage_4_attainment_school_year_2012_to_2013)))
 
-m1 <- lm(log_odds_ks4asy ~ population_2011 + factor(income_flag), data = edu)
+##m1 <- lm(log_odds_ks4asy ~ population_2011 + factor(income_flag), data = edu)
 
-summary(m1)
+#summary(m1)
 
 #transforming back
-predicted_log_odds <- predict(m1, type = "response")
-predicted_proportions <- exp(predicted_log_odds) / (1 + exp(predicted_log_odds))
+#predicted_log_odds <- predict(m1, type = "response")
+#predicted_proportions <- exp(predicted_log_odds) / (1 + exp(predicted_log_odds))
 ```
