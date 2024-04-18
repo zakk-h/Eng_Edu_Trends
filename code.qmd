@@ -46,13 +46,35 @@ readr::write_csv(
 
 
 #transforming to log odds
-edu <- edu %>%
-  mutate(log_odds_ks4asy = log(key_stage_4_attainment_school_year_2012_to_2013 / (1 - key_stage_4_attainment_school_year_2012_to_2013)))
+#english_education <- english_education %>%
+#  mutate(log_odds_ks4asy = log(key_stage_4_attainment_school_year_2012_to_2013 / (1 #- key_stage_4_attainment_school_year_2012_to_2013)))
 
-##m1 <- lm(log_odds_ks4asy ~ population_2011 + factor(income_flag), data = edu)
+#m1 <- lm(education_score ~ population_2011, data = english_education)
 
 #summary(m1)
 
+#m1 <- lm(education_score ~  factor(size_flag), data = english_education)
+
+#summary(m1)
+
+#better option - population_2011
+#m1 <- lm(education_score ~  factor(size_flag)+factor(university_flag)+factor###(job_density_flag)+highest_level_qualification_achieved_b_age_22_average_score+factor(rgn11nm), data = english_education)
+#summary(m1)
+
+
+m1 <- lm(education_score ~  population_2011+highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000	, data = english_education)
+summary(m1)
+
+
+#ggplot(m1, aes(x = .fitted, y = .resid)) + 
+  #geom_point() + 
+  #geom_hline(yintercept = 0, color = "darkred") + 
+  #labs(x = "Fitted (predicted) value", y = "Residual") + 
+  #theme_bw()
+
+#m2 <- lm(education_score ~ highest_level_qualification_achieved_b_age_22_average_score, data = english_education)
+
+#summary(m2)
 #transforming back
 #predicted_log_odds <- predict(m1, type = "response")
 #predicted_proportions <- exp(predicted_log_odds) / (1 + exp(predicted_log_odds))
