@@ -62,15 +62,33 @@ readr::write_csv(
 #summary(m1)
 
 
-m1 <- lm(education_score ~  population_2011+highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000	, data = english_education)
+m1 <- lm(education_score ~  population_2011+highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013		, data = english_education)
 summary(m1)
 
 
-#ggplot(m1, aes(x = .fitted, y = .resid)) + 
-  #geom_point() + 
-  #geom_hline(yintercept = 0, color = "darkred") + 
-  #labs(x = "Fitted (predicted) value", y = "Residual") + 
-  #theme_bw()
+ggplot(m1, aes(x = .fitted, y = .resid)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0, color = "darkred") + 
+  labs(x = "Fitted (predicted) value", y = "Residual") + 
+  theme_bw()
+
+
+ggplot(m1, aes(x = .resid)) + 
+  geom_histogram(aes(y = ..density..), 
+                     fill = "deepskyblue", color = "darkblue") + 
+  stat_function(fun = dnorm, 
+                args = list(mean = mean(m1$.resid),
+                            sd = sd(m1$.resid)),
+                color = "darkred", lwd = 2) +
+  labs(x = "Residual", y = "Density") + 
+  theme_bw()
+
+ggplot(m1, aes(sample = .resid)) +
+  stat_qq() + 
+  stat_qq_line() + 
+  theme_bw() + 
+  labs(x = "Theoretical quantiles", 
+       y = "Sample quantiles")
 
 #m2 <- lm(education_score ~ highest_level_qualification_achieved_b_age_22_average_score, data = english_education)
 
@@ -78,4 +96,9 @@ summary(m1)
 #transforming back
 #predicted_log_odds <- predict(m1, type = "response")
 #predicted_proportions <- exp(predicted_log_odds) / (1 + exp(predicted_log_odds))
+```
+
+```{r}
+library(nnet)
+m1 <- multinom(food ~ sex + length, data = gators)
 ```
