@@ -1,0 +1,17 @@
+---
+title: "STA 210 - Final Project"
+author: "Zakk Heile & Julia Healey-Parera"
+format: pdf
+---
+
+```{r}
+library(tidyverse)
+library(broom)
+library(glm2)
+library(dplyr)
+library(Stat2Data)
+library(pROC)
+library(yardstick)
+library(ggplot2)
+data <- read.csv("data/english_education")
+```
