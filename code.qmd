@@ -13,5 +13,9 @@ library(Stat2Data)
 library(pROC)
 library(yardstick)
 library(ggplot2)
-data <- read.csv("data/english_education")
+data <- read.csv("data/english_education.csv")
+```
+
+```{r}
+
 ```
