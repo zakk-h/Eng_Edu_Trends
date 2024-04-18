@@ -13,9 +13,23 @@ library(Stat2Data)
 library(pROC)
 library(yardstick)
 library(ggplot2)
-data <- read.csv("data/english_education.csv")
+#edu <- read.csv("data/english_education.csv")
+edu <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-01-23/english_education.csv')
+
 ```
 
 ```{r}
 
+
+#transforming to log odds
+edu <- edu %>%
+  mutate(log_odds_ks4asy = log(key_stage_4_attainment_school_year_2012_to_2013 / (1 - key_stage_4_attainment_school_year_2012_to_2013)))
+
+m1 <- lm(log_odds_ks4asy ~ population_2011 + factor(income_flag), data = edu)
+
+summary(m1)
+
+#transforming back
+predicted_log_odds <- predict(m1, type = "response")
+predicted_proportions <- exp(predicted_log_odds) / (1 + exp(predicted_log_odds))
 ```
