@@ -19,6 +19,7 @@ library(janitor)
 library(here)
 library(fs)
 library(withr)
+library(lmtest)
 
 #edu <- read.csv("data/english_education.csv")
 edu <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-01-23/english_education.csv')
@@ -61,8 +62,9 @@ readr::write_csv(
 #m1 <- lm(education_score ~  factor(size_flag)+factor(university_flag)+factor###(job_density_flag)+highest_level_qualification_achieved_b_age_22_average_score+factor(rgn11nm), data = english_education)
 #summary(m1)
 
+#english_education <- na.omit(english_education) #complete case analysis for all variables, even those we aren't using. We want R's default complete case analysis, only for those variables we are working with.
 
-m1 <- lm(education_score ~  population_2011+highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013		, data = english_education)
+m1 <- lm(education_score ~  population_2011 + highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013		, data = english_education)
 summary(m1)
 
 
@@ -73,15 +75,7 @@ ggplot(m1, aes(x = .fitted, y = .resid)) +
   theme_bw()
 
 
-ggplot(m1, aes(x = .resid)) + 
-  geom_histogram(aes(y = ..density..), 
-                     fill = "deepskyblue", color = "darkblue") + 
-  stat_function(fun = dnorm, 
-                args = list(mean = mean(m1$.resid),
-                            sd = sd(m1$.resid)),
-                color = "darkred", lwd = 2) +
-  labs(x = "Residual", y = "Density") + 
-  theme_bw()
+m1_aug <- augment(m1)
 
 ggplot(m1, aes(sample = .resid)) +
   stat_qq() + 
@@ -89,6 +83,41 @@ ggplot(m1, aes(sample = .resid)) +
   theme_bw() + 
   labs(x = "Theoretical quantiles", 
        y = "Sample quantiles")
+
+
+quantiles <- quantile(m1_aug$.fitted, probs = seq(0, 1, by = 0.1))
+
+variance_intervals_df <- data.frame(interval = character(0), variance = numeric(0))
+
+for (i in 1:(length(quantiles) - 1)) {
+  subset_data <- m1_aug %>%
+    filter(.fitted >= quantiles[i] & .fitted < quantiles[i + 1])
+  
+  interval_name <- paste(round(quantiles[i], 2), "-", round(quantiles[i + 1], 2), sep="")
+  variance_value <- var(subset_data$.resid)
+  
+  variance_intervals_df <- rbind(variance_intervals_df, 
+                           data.frame(interval=interval_name,
+                           variance=variance_value))
+}
+
+print(variance_intervals_df)
+
+bptest_result <- bptest(m1)
+
+print(bptest_result)
+
+resid_mean <- mean(m1_aug$.resid, na.rm = TRUE)
+resid_sd <- sd(m1_aug$.resid, na.rm = TRUE)
+
+ggplot(m1_aug, aes(x = .resid)) + 
+  geom_histogram(aes(y = ..density..), 
+                 fill = "deepskyblue", color = "darkblue", bins = 30) + 
+  stat_function(fun = dnorm, 
+                args = list(mean = resid_mean, sd = resid_sd),
+                color = "darkred", lwd = 2) +
+  labs(x = "Residual", y = "Density") + 
+  theme_bw()
 
 #m2 <- lm(education_score ~ highest_level_qualification_achieved_b_age_22_average_score, data = english_education)
 
@@ -99,9 +128,9 @@ ggplot(m1, aes(sample = .resid)) +
 ```
 
 ```{r}
-library(nnet)
-m2 <- multinom(rgn11nm ~ education_score +  population_2011+highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013, data = english_education)
-summary(m2)
+#library(nnet)
+#m2 <- multinom(rgn11nm ~ education_score +  population_2011+highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013, data = english_education)
+#summary(m2)
 
 ```
 
