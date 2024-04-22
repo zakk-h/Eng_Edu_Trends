@@ -77,6 +77,8 @@ ggplot(m1, aes(x = .fitted, y = .resid)) +
 
 m1_aug <- augment(m1)
 
+
+
 ggplot(m1, aes(sample = .resid)) +
   stat_qq() + 
   stat_qq_line() + 
@@ -135,5 +137,38 @@ ggplot(m1_aug, aes(x = .resid)) +
 ```
 
 ```{r}
+min_max_education_score <- english_education %>%
+  summarise(min_education_score = min(education_score, na.rm = TRUE),
+            max_education_score = max(education_score, na.rm = TRUE))
 
+min_max_population_2011 <- english_education %>%
+  summarise(min_population_2011 = min(population_2011, na.rm = TRUE),
+            max_population_2011 = max(population_2011, na.rm = TRUE))
+
+min_max_highest_qualification <- english_education %>%
+  summarise(min_highest_qualification = min(highest_level_qualification_achieved_b_age_22_average_score, na.rm = TRUE),
+            max_highest_qualification = max(highest_level_qualification_achieved_b_age_22_average_score, na.rm = TRUE))
+
+min_max_level_3_age_18 <- english_education %>%
+  summarise(min_level_3_age_18 = min(level_3_at_age_18, na.rm = TRUE),
+            max_level_3_age_18 = max(level_3_at_age_18, na.rm = TRUE))
+
+min_max_activity_age_19 <- english_education %>%
+  summarise(min_activity_age_19 = min(activity_at_age_19_employment_with_earnings_above_10_000, na.rm = TRUE),
+            max_activity_age_19 = max(activity_at_age_19_employment_with_earnings_above_10_000, na.rm = TRUE))
+
+min_max_key_stage_4 <- english_education %>%
+  summarise(min_key_stage_4 = min(key_stage_4_attainment_school_year_2012_to_2013, na.rm = TRUE),
+            max_key_stage_4 = max(key_stage_4_attainment_school_year_2012_to_2013, na.rm = TRUE))
+
+min_max_df <- bind_rows(
+  min_max_education_score,
+  min_max_population_2011,
+  min_max_highest_qualification,
+  min_max_level_3_age_18,
+  min_max_activity_age_19,
+  min_max_key_stage_4
+)
+
+print(min_max_df)
 ```
