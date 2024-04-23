@@ -82,7 +82,7 @@ lambda <- bc$x[which.max(bc$y)]
 english_education$population_2011_bc <- (english_education$population_2011^lambda - 1) / lambda
 
 
-m1 <- lm(highest_level_qualification_achieved_b_age_22_average_score	 ~ rgn11nm_combined + coastal + highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013		, data = english_education)
+m1 <- lm(highest_level_qualification_achieved_b_age_22_average_score	 ~ rgn11nm_combined + level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013		, data = english_education)
 summary(m1)
 
 
