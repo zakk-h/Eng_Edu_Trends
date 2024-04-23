@@ -71,7 +71,7 @@ summary(m1)
 ggplot(m1, aes(x = .fitted, y = .resid)) + 
   geom_point() + 
   geom_hline(yintercept = 0, color = "darkred") + 
-  labs(x = "Fitted (predicted) value", y = "Residual", title = "Linearity looks great, Constant variance looks sufficient") + 
+  labs(x = "Fitted (predicted) value", y = "Residual", title = "Linearity looks great except at endpoints, Constant variance looks sufficient") + 
   theme_bw()
 
 
@@ -84,7 +84,7 @@ ggplot(m1, aes(sample = .resid)) +
   stat_qq_line() + 
   theme_bw() + 
   labs(x = "Theoretical quantiles", 
-       y = "Sample quantiles", title = "Deviation from left of QQ plot but acceptable, isolated incident")
+       y = "Sample quantiles", title = "Slight deviations but very reasonably normal")
 
 
 quantiles <- quantile(m1_aug$.fitted, probs = seq(0, 1, by = 0.2))
@@ -118,7 +118,7 @@ ggplot(m1_aug, aes(x = .resid)) +
   stat_function(fun = dnorm, 
                 args = list(mean = resid_mean, sd = resid_sd),
                 color = "darkred", lwd = 2) +
-  labs(x = "Residual", y = "Density", title = "Long left tail but normality of residuals looks great") + 
+  labs(x = "Residual", y = "Density", title = "Symmetric tails and great fit to normal distribution") + 
   theme_bw()
 
 #m2 <- lm(education_score ~ highest_level_qualification_achieved_b_age_22_average_score, data = english_education)
