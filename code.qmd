@@ -87,7 +87,7 @@ ggplot(m1, aes(sample = .resid)) +
        y = "Sample quantiles", title = "Deviation from left of QQ plot but acceptable, isolated incident")
 
 
-quantiles <- quantile(m1_aug$.fitted, probs = seq(0, 1, by = 0.1))
+quantiles <- quantile(m1_aug$.fitted, probs = seq(0, 1, by = 0.2))
 
 variance_intervals_df <- data.frame(interval = character(0), variance = numeric(0))
 
