@@ -44,6 +44,42 @@ readr::write_csv(
 ```
 
 ```{r}
+# bc <- boxcox(lm(highest_level_qualification_achieved_b_age_22_average_score ~ population_2011, data = english_education))
+# lambda <- bc$x[which.max(bc$y)]
+# english_education$population_2011_bc <- (english_education$population_2011^lambda - 1) / lambda
+
+# level4qual_residents35_64_2011
+# activity_at_age_19_full_time_higher_education
+# activity_at_age_19_appprenticeships
+
+english_education$rgn11nm <- as.character(english_education$rgn11nm)
+
+english_education$rgn11nm_combined <- "Other"
+
+english_education$rgn11nm_combined[english_education$rgn11nm %in% c("South East", "South West")] <- "South"
+english_education$rgn11nm_combined[english_education$rgn11nm == "North East"] <- "North East"
+english_education$rgn11nm_combined[english_education$rgn11nm == "North West"] <- "North West"
+
+english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
+english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
+
+english_education$rgn11nm_combined <- relevel(english_education$rgn11nm_combined, ref = "South")
+
+
+m1 <- lm(
+  highest_level_qualification_achieved_b_age_22_average_score	~ 
+    level4qual_residents35_64_2011*level_3_at_age_18 +
+    activity_at_age_19_full_time_higher_education +
+    level4qual_residents35_64_2011 +
+    rgn11nm_combined + 
+    level_3_at_age_18	+ 
+    key_stage_4_attainment_school_year_2012_to_2013, 
+  data = english_education
+  )
+summary(m1)
+```
+
+```{r}
 
 
 #transforming to log odds
@@ -77,13 +113,7 @@ english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
 
 english_education$rgn11nm_combined <- relevel(english_education$rgn11nm_combined, ref = "South")
 
-bc <- boxcox(lm(highest_level_qualification_achieved_by_age_22_level_6_or_above ~ population_2011, data = english_education))
-lambda <- bc$x[which.max(bc$y)]
-english_education$population_2011_bc <- (english_education$population_2011^lambda - 1) / lambda
 
-
-m1 <- lm(highest_level_qualification_achieved_b_age_22_average_score	 ~ rgn11nm_combined + level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013		, data = english_education)
-summary(m1)
 
 
 ggplot(m1, aes(x = .fitted, y = .resid)) + 
@@ -139,19 +169,10 @@ ggplot(m1_aug, aes(x = .resid)) +
   labs(x = "Residual", y = "Density", title = "Symmetric tails and great fit to normal distribution") + 
   theme_bw()
 
-#m2 <- lm(education_score ~ highest_level_qualification_achieved_b_age_22_average_score, data = english_education)
 
-#summary(m2)
 #transforming back
 #predicted_log_odds <- predict(m1, type = "response")
 #predicted_proportions <- exp(predicted_log_odds) / (1 + exp(predicted_log_odds))
-```
-
-```{r}
-#library(nnet)
-#m2 <- multinom(rgn11nm ~ education_score +  population_2011+highest_level_qualification_achieved_b_age_22_average_score+ level_3_at_age_18	+ activity_at_age_19_employment_with_earnings_above_10_000 + key_stage_4_attainment_school_year_2012_to_2013, data = english_education)
-#summary(m2)
-
 ```
 
 ```{r}
