@@ -10,7 +10,7 @@ output:
 
 **Project motivation + research question**
 
-Current research supports the theory that an individual’s educational attainment (number of degrees, general educational achievement) has a strong positive relationship with wages earned later in life (United States Department of Labor, 2023). Operating under the assumption that this research is accurate, we can thus assume that proper knowledge of factors related with educational attainment would allow for better estimation of earnings later in life. Thus, this study builds upon prior research and attempts to identify longitudinal variables (variables over time)  with a relationship with educational attainment. 
+Current research supports the theory that an individual’s educational attainment (number of degrees, general educational achievement) has a strong positive relationship with wages earned later in life (United States Department of Labor 2023). Operating under the assumption that this research is accurate, we can thus assume that proper knowledge of factors related with educational attainment would allow for better estimation of earnings later in life. Thus, this study builds upon prior research and attempts to identify longitudinal variables (variables over time)  with a relationship with educational attainment. 
 
 **Dataset explanation**
 
@@ -114,4 +114,4 @@ Future research could investigate how individuals perform in college (if they go
 
 **Works Cited (CSE)**
 
-Department of Labor, United States. 2023 Sep 6. Education pays. U.S. Bureau of Labor Statistics. https://www.bls.gov/emp/chart-unemployment-earnings-education.htm
+United States Department of Labor. 2023 Sep 6. Education pays. U.S. Bureau of Labor Statistics. \[accessed 2024 Apr 24\]. Available from: https://www.bls.gov/emp/chart-unemployment-earnings-education.htm
