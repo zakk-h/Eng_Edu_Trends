@@ -1,7 +1,9 @@
 ---
 title: "STA 210 - Final Project"
 author: "Zakk Heile & Julia Healey-Parera"
-format: pdf
+output: 
+  pdf_document:
+    format: pdf
 ---
 
 **Introduction**
@@ -84,11 +86,9 @@ Independence of residuals: The observations are unique per region, meaning no re
 
 We predicted the average highest education qualification for a city/town achieved that ranged between 2.57 and 5.14  in our dataset. Our predictors were all untransformed and one interaction term was included:
 
-![](images/clipboard-878376556.png){width="777"} 
+![](images/clipboard-878376556.png){width="656"} 
 
-All of our coefficients are statistically significant at the 0.05 level. All predictors except for level4qual_residents35_64_2011Low:level_3_at_age_18 and level4qual_residents35_64_2011Medium:level_3_at_age_18
-
- increased average highest education when each one was increased on its own, holding the other predictors constant. The two negative slopes were minimal in magnitude. Our linear model presents compelling evidence to support the idea that all of these our predictors to have a relationship with average highest education in a town/city, and all except the interaction terms have a positive relationship.
+All of our coefficients are statistically significant at the 0.05 level. All predictors except for two interaction coefficients increased average highest education when each one was increased on its own, holding the other predictors constant. The two negative slopes were minimal in magnitude. Our linear model presents compelling evidence to support the idea that all of these our predictors to have a relationship with average highest education in a town/city, and all except the interaction terms have a positive relationship.
 
 **Discussion**
 
@@ -111,3 +111,7 @@ In general, the findings of this model are fairly tailored to the dataset used. 
 Additionally, the economic variable we considered in a model but did not make it to the final model, the percentage of individuals earning above £10,000 at age 19, is grounded in the context of 2012's economy. If the same variable was used today, given inflationary trends, it would change the meaning of the variable because apprenticeships could now be above the cutoff, when as of the 2012 data, only those that have high-paying jobs at age 19 would be included. High-paying jobs we argue are associated with a higher level of education, and our data supports this. We also grouped a variety of regions into the Other category, which increased statistical significance but reduced granularity or specific insights.
 
 Future research could investigate how individuals perform in college (if they go) to see how well their earlier studies prepared them for it. Additional variables that, if there were in the dataset, would aid in predicting education score are: average income in area, student:teacher ratio, school funding per pupil, and poverty percentage. We are fascinated by the reason that an increase in population is associated with a decrease in education scores, which is in contrary to our intuition for the United States education system, and believe it is worth additional exploration. Future research could deploy a multinomial model to predict regions or types of towns/cities based on education statistics as well, which would target a different question than the one we are addressing, but an interesting one nonetheless.
+
+**Works Cited (CSE)**
+
+Department of Labor, United States. 2023 Sep 6. Education pays. U.S. Bureau of Labor Statistics. https://www.bls.gov/emp/chart-unemployment-earnings-education.htm
