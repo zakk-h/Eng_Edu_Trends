@@ -211,3 +211,7 @@ min_max_df <- bind_rows(
 
 print(min_max_df)
 ```
+
+```{r}
+
+```
