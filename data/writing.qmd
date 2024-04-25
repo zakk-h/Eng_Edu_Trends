@@ -1,3 +1,9 @@
+---
+title: "STA 210 - Final Project"
+author: "Zakk Heile & Julia Healey-Parera"
+format: pdf
+---
+
 **Introduction**
 
 **Project motivation + research question**
@@ -46,29 +52,39 @@ We eliminated all of the above variables for having p-values above 0.05 and ther
 
 Our linear model’s R-squared metric (both multiple and adjusted) is above 92%. Over 92% of the variation in education scores is explained by our model.  The residual standard error, a measure of the standard deviation of the residuals from the predicted values, is 0.09655.
 
+![](images/clipboard-870867287.png)
+
 All variables were tested for multicollinearity and passed; the F-statistic has a p-value of 2.2\*10\^-16, which is highly statistically significant. We can reject the null hypothesis of all coefficients being 0 with extremely high confidence.
 
-The residual plot shows great symmetry across the residual = 0 line, indicating that the linearity assumption in the parameters is indeed met. Visually, homoscedasticity looks reasonable, but there is more variance when fitted values are 0. Code was used to find 6 quantiles, split the observations into quintiles based on those quantiles, and then calculate the variance of the residuals for each quintile. From there, we quantitatively assessed homoscedasticity, and each decile’s variance was reasonably close to all others, with the exception being where the fitted values are 0. The Breusch-Pagan test finds statistically significant evidence for heteroscedasticity. However, we moved forward with this model because the heteroscedasticity does not bias the estimates for the coefficients. We also explored transformations in the predictors but did not find them worth pursuing. Specifically, we tried Box-Cox transformations.
+![](images/clipboard-1874417508.png)
+
+The residual plot shows great symmetry across the residual = 0 line, indicating that the linearity assumption in the parameters is indeed met. Visually, homoscedasticity looks reasonable, but there is more variance when fitted values are 0.
+
+![](images/clipboard-3633941877.png)
+
+Code was used to find 6 quantiles, split the observations into quintiles based on those quantiles, and then calculate the variance of the residuals for each quintile. From there, we quantitatively assessed homoscedasticity, and each decile’s variance was reasonably close to all others, with the exception being where the fitted values are 0.
+
+![](images/clipboard-2777448781.png)
+
+The Breusch-Pagan test finds statistically significant evidence for heteroscedasticity. However, we moved forward with this model because the heteroscedasticity does not bias the estimates for the coefficients.
+
+![](images/clipboard-3852742502.png)
+
+We also explored transformations in the predictors but did not find them worth pursuing. Specifically, we tried Box-Cox transformations.
 
 The quantile-quantile plot shows that the residuals roughly follow a normal distribution, with the left tail deviating slightly and seeming heavier, but when combined with the histogram, appear sufficiently normal for our purposes.
+
+![](images/clipboard-4000820266.png)
+
+![](images/clipboard-4103333291.png)
 
 Independence of residuals: The observations are unique per region, meaning no regions are double counted and each is disjoint, so the observations are fully distinct from one another. Thus, the errors are independent, which implies the predicted values are independent. 
 
 **Results**
 
-We predicted the average highest education qualification for a city/town achieved that ranged between 2.57 and 5.14  in our dataset. Our predictors were all untransformed: 
+We predicted the average highest education qualification for a city/town achieved that ranged between 2.57 and 5.14  in our dataset. Our predictors were all untransformed and one interaction term was included:
 
-Level4qual_residents35_64_2011 (Low, Medium; High as the baseline)
-
-Level_3_at_age_18
-
-Activity_at_age_19_full_time_higher_education
-
-Rgn11nm_combined (North East, North West, Other; South \[South East + South West\] as the baseline 
-
-Key_stage_4_attainment_school_year_2012_to_2013
-
-The interaction between level4qual and level_3.
+![](images/clipboard-878376556.png){width="777"} 
 
 All of our coefficients are statistically significant at the 0.05 level. All predictors except for level4qual_residents35_64_2011Low:level_3_at_age_18 and level4qual_residents35_64_2011Medium:level_3_at_age_18
 
