@@ -56,6 +56,7 @@ english_education$rgn11nm <- as.character(english_education$rgn11nm)
 
 english_education$rgn11nm_combined <- "Other"
 
+#Combining regions where it makes sense geographically
 english_education$rgn11nm_combined[english_education$rgn11nm %in% c("South East", "South West")] <- "South"
 english_education$rgn11nm_combined[english_education$rgn11nm == "North East"] <- "North East"
 english_education$rgn11nm_combined[english_education$rgn11nm == "North West"] <- "North West"
@@ -63,9 +64,10 @@ english_education$rgn11nm_combined[english_education$rgn11nm == "North West"] <-
 english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
 english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
 
+#Baseline
 english_education$rgn11nm_combined <- relevel(english_education$rgn11nm_combined, ref = "South")
 
-
+#Final model that includes an interaction term
 m1 <- lm(
   highest_level_qualification_achieved_b_age_22_average_score	~ 
     level4qual_residents35_64_2011*level_3_at_age_18 +
@@ -114,8 +116,7 @@ english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
 english_education$rgn11nm_combined <- relevel(english_education$rgn11nm_combined, ref = "South")
 
 
-
-
+#Residual Plot
 ggplot(m1, aes(x = .fitted, y = .resid)) + 
   geom_point() + 
   geom_hline(yintercept = 0, color = "darkred") + 
@@ -126,7 +127,7 @@ ggplot(m1, aes(x = .fitted, y = .resid)) +
 m1_aug <- augment(m1)
 
 
-
+#QQ Plot
 ggplot(m1, aes(sample = .resid)) +
   stat_qq() + 
   stat_qq_line() + 
@@ -134,7 +135,7 @@ ggplot(m1, aes(sample = .resid)) +
   labs(x = "Theoretical quantiles", 
        y = "Sample quantiles", title = "Slight deviations but very reasonably normal")
 
-
+#Our custom method of assessing constant variance - splitting into even intervals, calculating variance of each, and comparing.
 quantiles <- quantile(m1_aug$.fitted, probs = seq(0, 1, by = 0.2))
 
 variance_intervals_df <- data.frame(interval = character(0), variance = numeric(0))
@@ -153,6 +154,7 @@ for (i in 1:(length(quantiles) - 1)) {
 
 print(variance_intervals_df)
 
+#Formal test for constant variance
 bptest_result <- bptest(m1)
 
 print(bptest_result)
@@ -160,6 +162,7 @@ print(bptest_result)
 resid_mean <- mean(m1_aug$.resid, na.rm = TRUE)
 resid_sd <- sd(m1_aug$.resid, na.rm = TRUE)
 
+#Histogram compared to normal distribution
 ggplot(m1_aug, aes(x = .resid)) + 
   geom_histogram(aes(y = ..density..), 
                  fill = "deepskyblue", color = "darkblue", bins = 30) + 
@@ -176,6 +179,7 @@ ggplot(m1_aug, aes(x = .resid)) +
 ```
 
 ```{r}
+#Finding min and max values taken on by variables, columns of the datasaet.
 min_max_education_score <- english_education %>%
   summarise(min_education_score = min(education_score, na.rm = TRUE),
             max_education_score = max(education_score, na.rm = TRUE))
