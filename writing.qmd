@@ -94,6 +94,14 @@ We predicted the average highest education qualification for a city/town achieve
 
 All of our coefficients are statistically significant at the 0.05 level. All predictors except for two interaction coefficients increased average highest education when each one was increased on its own, holding the other predictors constant. The two negative slopes were minimal in magnitude. Our linear model presents compelling evidence to support the idea that all of our predictors have a relationship with average highest education in a town/city, and all except the interaction terms have a positive relationship.
 
+All variables and coefficients are explained in our Discussion. Some of our most interesting coefficients, however, are those pertaining to rgn11nm_combined. The interpretations for those three coefficients are as follows:
+
+1.  North East, 0.0918015 -
+
+2.  North West, 0.0571483 -
+
+3.  Other, 0.0323596 - \
+
 **Discussion**
 
 **VARIABLE DISCUSSION**
@@ -112,9 +120,7 @@ In general, the findings of this model are fairly tailored to the dataset used. 
 
 **OTHER LIMITATIONS + FUTURE RESEARCH**
 
-Our data potentially captures individuals' locations at the time of surveying, which could assign them to towns different from where they received their earlier education, notably year 13 and earlier, which we are interested in. Two potential causes of this would be relocating for work or college. Whether or not this is a limiting factor depends on how exactly the data was collected.
-
-Additionally, the economic variable we considered but did not include in the final model, the percentage of individuals earning above £10,000 at age 19, is grounded in the context of 2012's economy. If the same variable was used today, given inflationary trends, it would change the meaning of the variable because apprenticeships could now be above the cutoff, when as of the 2012 data, only those that have high-paying jobs at age 19 would be included. High-paying jobs we argue are associated with a higher level of education, and our data supports this. We also grouped a variety of regions into the Other category, which increased statistical significance but reduced granularity or specific insights.
+Our data potentially captures individuals' locations at the time of surveying, which could assign them to towns different from where they received their earlier education, notably year 13 and earlier, which we are interested in. Two potential causes of this would be relocating for work or college. Whether or not this is a limiting factor depends on how exactly the data was collected. Additionally, we grouped a variety of geogrpaphic regions into the Other category in variable rgn11nm_combined, which increased statistical significance but reduced granularity or specific insights.
 
 Future research could investigate how individuals perform in college (if they go) to see how well their earlier studies prepared them for it. Additional variables that would aid in predicting later educational performance are: average income in area, student:teacher ratio, school funding per pupil, and poverty percentage. We are fascinated by the reason that an increase in population is associated with a decrease in education scores, which is in contrary to our intuition for the United States education system, and believe it is worth additional exploration. Future research could deploy a multinomial model to predict regions or types of towns/cities based on education statistics as well, which would target a different question than the one we are addressing, but an interesting one nonetheless.
 
