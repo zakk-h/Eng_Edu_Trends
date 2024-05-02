@@ -34,6 +34,10 @@ These variables included in our final model were tested for statistical signific
 
 The outcome, `highest_level_qualification_achieved_b_age_22_average_score`, has a range of 2.566929 to 5.142857. Actual qualification levels range from 1 (passing GCSE for grades 1, 2, and 3) to 8 (PhD or other doctorate degree). Because this variable is an average of highest qualification scores, the actual range is significantly smaller than the possible range.
 
+![](images/clipboard-4248934799.png){width="500"}
+
+Initially, the variable `rgn11nm` (region of UK the selected town is in) had many more factors; however, because not all of them were significant, we combined the categories in a statistically- and logically-sound manner. The factors South East and South West were combined into the statistically significant factor of South (used as reference level), North East (p-value of 2.03 \* 10\^-12) and North West ( (p-value of 1.31 \* 10\^-9) were left as-is because their coefficient p-values were below 0.05, and all other factors were combined into factor Other (p-value of 6.11 \* 10\^-6). While these groupings may see arbitrary, they are not as they follow geographic groupings. This was the only variable manipulation we performed. The relative distributions of the new variable (`rgn11nm_combined`) factors are visualized above.
+
 **METHODOLOGY**
 
 In order to construct our final model, we chose variables that were statistically significant and intuitively relevant to our predictor. Some predictors were initially considered because of this intuitive relevance but were later eliminated for being statistically insignificant. These variables were:
@@ -50,13 +54,13 @@ In order to construct our final model, we chose variables that were statisticall
 
 -   `income_flag` - Whether a town is low-, mid-, or high-income (categorical). 
 
-We eliminated all of the above variables for having p-values above 0.05 and thereby being statistically insignificant. We then iteratively tested for any statistically significant interaction terms between the remaining variables and found only one (`level4qual_residents35_64_2011*level_3_at_age_18`). Initially, the variable `rgn11nm` (region of UK the selected town is in) had many more factors; however, because not all of them were significant, we combined the categories in a statistically- and logically-sound manner. The factors South East and South West were combined into the statistically significant factor of South (used as reference level), North East (p-value of 2.03 \* 10\^-12) and North West ( (p-value of 1.31 \* 10\^-9) were left as-is because their coefficient p-values were below 0.05, and all other factors were combined into factor Other (p-value of 6.11 \* 10\^-6). This was the only variable manipulation we performed. In terms of transformations, our assumptions were sound and allowed us to conclude that no variable transformations were necessary. 
+We eliminated all of the above variables for having p-values above 0.05 and thereby being statistically insignificant. We then iteratively tested for any statistically significant interaction terms between the remaining variables and found only one (`level4qual_residents35_64_2011*level_3_at_age_18`). In terms of transformations, our assumptions were sound and allowed us to conclude that no variable transformations were necessary. 
 
 ![](images/clipboard-870867287.png)
 
 Our linear model’s R-squared metric (both multiple and adjusted) is above 92%. Over 92% of the variation in average highest qualification score is explained by our model.  The residual standard error, a measure of the standard deviation of the residuals from the predicted values, is 0.09655.
 
-![](images/clipboard-663033831.png)
+![](images/clipboard-663033831.png){width="500"}
 
 Above are pair plots displaying the linear relationships between all continuous variables. Because there appeared to be strong linear relationships between all of these continuous variables, all variables were tested for multicollinearity. After statistical analysis described below, we concluded that there is no significant multicollinearity and proceeded with our study.
 
@@ -64,7 +68,7 @@ Above are pair plots displaying the linear relationships between all continuous 
 
 The model F-statistic has a p-value of 2.2\*10\^-16, which is highly statistically significant, and all included variables are also highly statistically significant with similarly low p-values. Thus, all variables pass the test for multicollinearity. In addition, the generalized variance inflation factors were all below the statistically-accepted threshold of 10. Thus, we can reject the null hypothesis of all coefficients being 0 with extremely high confidence.
 
-![](images/clipboard-3633941877.png)
+![](images/clipboard-3633941877.png){width="500"}
 
 The residual plot shows great symmetry across the residual = 0 line, indicating that the linearity assumption in the parameters is indeed met. Visually, homoscedasticity looks reasonable, but there is more variance when fitted values are 0.
 
@@ -78,11 +82,11 @@ The Breusch-Pagan test finds statistically significant evidence for heteroscedas
 
 We also explored transformations in the predictors but did not find them worth pursuing. Specifically, we tried Box-Cox transformations.
 
-![](images/clipboard-4000820266.png)
+![](images/clipboard-4000820266.png){width="500"}
 
 The quantile-quantile plot shows that the residuals roughly follow a normal distribution, with the left tail deviating slightly and seeming heavier. However, when combined with the histogram, the residuals appear sufficiently normal for our purposes.
 
-![](images/clipboard-4103333291.png)
+![](images/clipboard-4103333291.png){width="500"}
 
 Thus, in terms of independence of residuals, we conclude the following: The observations are unique for each town, meaning no town is double counted and each one is disjoint. Thus, the observations are fully distinct from one another. Therefore, we can state that the errors are independent, thereby implying that the predicted values are also independent. 
 

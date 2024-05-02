@@ -217,5 +217,19 @@ print(min_max_df)
 ```
 
 ```{r}
+edu_pairs <- english_education |> 
+  select(
+    activity_at_age_19_full_time_higher_education,
+    highest_level_qualification_achieved_b_age_22_average_score,
+    level_3_at_age_18, 
+    key_stage_4_attainment_school_year_2012_to_2013) |> 
+  mutate()
 
+pairs(edu_pairs[, 1:4], main = "Pairs Plot of Iris Data")
+
+ggplot(english_education, aes(x = factor(rgn11nm_combined))) +
+  geom_bar() +
+  labs(x = "Region (rgn11nm_combined)", y = "Count", title = "Relative Distributions of New Regions") +
+  theme_bw(color = "") 
+  
 ```
