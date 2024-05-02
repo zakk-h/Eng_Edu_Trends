@@ -56,7 +56,7 @@ In order to construct our final model, we chose variables that were statisticall
 
 We eliminated all of the above variables for having p-values above 0.05 and thereby being statistically insignificant. We then iteratively tested for any statistically significant interaction terms between the remaining variables and found only one (`level4qual_residents35_64_2011*level_3_at_age_18`). In terms of transformations, our assumptions were sound and allowed us to conclude that no variable transformations were necessary. 
 
-![](images/clipboard-870867287.png)
+![](images/clipboard-870867287.png){width="500"}
 
 Our linear model’s R-squared metric (both multiple and adjusted) is above 92%. Over 92% of the variation in average highest qualification score is explained by our model.  The residual standard error, a measure of the standard deviation of the residuals from the predicted values, is 0.09655.
 
@@ -64,7 +64,7 @@ Our linear model’s R-squared metric (both multiple and adjusted) is above 92%.
 
 Above are pair plots displaying the linear relationships between all continuous variables. Because there appeared to be strong linear relationships between all of these continuous variables, all variables were tested for multicollinearity. After statistical analysis described below, we concluded that there is no significant multicollinearity and proceeded with our study.
 
-![](images/clipboard-1874417508.png)
+![](images/clipboard-1874417508.png){width="500"}
 
 The model F-statistic has a p-value of 2.2\*10\^-16, which is highly statistically significant, and all included variables are also highly statistically significant with similarly low p-values. Thus, all variables pass the test for multicollinearity. In addition, the generalized variance inflation factors were all below the statistically-accepted threshold of 10. Thus, we can reject the null hypothesis of all coefficients being 0 with extremely high confidence.
 
@@ -72,11 +72,11 @@ The model F-statistic has a p-value of 2.2\*10\^-16, which is highly statistical
 
 The residual plot shows great symmetry across the residual = 0 line, indicating that the linearity assumption in the parameters is indeed met. Visually, homoscedasticity looks reasonable, but there is more variance when fitted values are 0.
 
-![](images/clipboard-2777448781.png)
+![](images/clipboard-2777448781.png){width="300"}
 
 Code was used to find 6 quantiles, split the observations into quintiles based on those quantiles, and then calculate the variance of the residuals for each quintile. From there, we quantitatively assessed homoscedasticity, and each decile’s variance was reasonably close to all others, with the exception being where the fitted values are 0.
 
-![](images/clipboard-3852742502.png)
+![](images/clipboard-3852742502.png){width="520"}
 
 The Breusch-Pagan test finds statistically significant evidence for heteroscedasticity. However, we moved forward with this model because the heteroscedasticity does not bias the estimates for the coefficients.
 
