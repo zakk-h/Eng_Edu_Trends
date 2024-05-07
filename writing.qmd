@@ -1,5 +1,5 @@
 ---
-title: "STA 210 - Final Project"
+title: "Investigating Factors Influencing Academic Achievement in English Towns"
 author: "Zakk Heile & Julia Healey-Parera"
 output: 
   pdf_document:

@@ -1,5 +1,5 @@
 ---
-title: "STA 210 - Final Project"
+title: "Investigating Factors Influencing Academic Achievement in English Towns"
 author: "Zakk Heile & Julia Healey-Parera"
 format: pdf
 ---
@@ -229,7 +229,6 @@ pairs(edu_pairs[, 1:4], main = "Pairs Plot of Iris Data")
 
 ggplot(english_education, aes(x = factor(rgn11nm_combined))) +
   geom_bar() +
-  labs(x = "Region (rgn11nm_combined)", y = "Count", title = "Relative Distributions of New Regions") +
-  theme_bw(color = "") 
+  labs(x = "Region (rgn11nm_combined)", y = "Count", title = "Relative Distributions of New Regions")
   
 ```
