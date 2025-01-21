@@ -5,67 +5,49 @@ format: pdf
 ---
 
 ```{r}
-
 library(MASS)
 library(tidyverse)
 library(broom)
-library(glm2)
-library(dplyr)
 library(Stat2Data)
 library(pROC)
 library(yardstick)
-library(ggplot2)
 library(janitor)
 library(here)
 library(fs)
 library(withr)
 library(lmtest)
+library(tidytuesday)
 
-#edu <- read.csv("data/english_education.csv")
-edu <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-01-23/english_education.csv')
-
-
-
-working_dir <- here::here("data")
-
-xls_path <- withr::local_tempfile(fileext = ".xlsx")
-download.file(
-  "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/educationandchildcare/datasets/educationalattainmentofyoungpeopleinenglishtownsdata/200708201819/youngpeoplesattainmentintownsreferencetable1.xlsx",
-  xls_path,
-  mode = "wb"
-)
-
-english_education <- readxl::read_xlsx(xls_path, sheet = "Data", na = "*") |> 
-  janitor::clean_names()
-
-readr::write_csv(
-  english_education,
-  fs::path(working_dir, "english_education.csv"))
+tuesdata <- tidytuesdayR::tt_load('2024-01-23')
+english_education <- tuesdata$english_education
 ```
 
 ```{r}
-# bc <- boxcox(lm(highest_level_qualification_achieved_b_age_22_average_score ~ population_2011, data = english_education))
-# lambda <- bc$x[which.max(bc$y)]
-# english_education$population_2011_bc <- (english_education$population_2011^lambda - 1) / lambda
+#Combining regions where it makes sense geographically
+lambda <- bc$x[which.max(bc$y)]
+english_education <- english_education |>
+  mutate(rgn11nm = as.charaacter(rgn11nm),
+         rgn11nm_combined = case_when(rgn11nm %in% c("South East", "South West") ~ "South",
+                                      rgn11nm == "North East" ~ "North East",
+                                      rgn11n == "North West" ~ "North West",
+                                      . ~ "Other"),
+         rgn11nm_combined = factor(rgn11nm_combined),
+         rgn11nm_combined = relevel(rgn11nm_combined, ref = 'South'))
+
+#english_education$population_2011_bc <- (english_education$population_2011^lambda - 1) / lambda
 
 # level4qual_residents35_64_2011
 # activity_at_age_19_full_time_higher_education
 # activity_at_age_19_appprenticeships
 
-english_education$rgn11nm <- as.character(english_education$rgn11nm)
+#boxcox transformation
+#Preparing boxcox object
+lambda <- bc$x[which.max(bc$y)]
 
-english_education$rgn11nm_combined <- "Other"
+bc <- boxcox(lm(highest_level_qualification_achieved_b_age_22_average_score ~ population_2011, data = english_education))
 
-#Combining regions where it makes sense geographically
-english_education$rgn11nm_combined[english_education$rgn11nm %in% c("South East", "South West")] <- "South"
-english_education$rgn11nm_combined[english_education$rgn11nm == "North East"] <- "North East"
-english_education$rgn11nm_combined[english_education$rgn11nm == "North West"] <- "North West"
-
-english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
-english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
-
-#Baseline
-english_education$rgn11nm_combined <- relevel(english_education$rgn11nm_combined, ref = "South")
+english_education |>
+  mutate(population_2011_bc = population_2011^(lambda - 1) / lambda)
 
 #Final model that includes an interaction term
 m1 <- lm(
@@ -78,7 +60,8 @@ m1 <- lm(
     key_stage_4_attainment_school_year_2012_to_2013, 
   data = english_education
   )
-summary(m1)
+
+m1_stats <- tidy(m1)
 ```
 
 ```{r}
@@ -102,20 +85,6 @@ summary(m1)
 
 #english_education <- na.omit(english_education) #complete case analysis for all variables, even those we aren't using. We want R's default complete case analysis, only for those variables we are working with.
 
-english_education$rgn11nm <- as.character(english_education$rgn11nm)
-
-english_education$rgn11nm_combined <- "Other"
-
-english_education$rgn11nm_combined[english_education$rgn11nm %in% c("South East", "South West")] <- "South"
-english_education$rgn11nm_combined[english_education$rgn11nm == "North East"] <- "North East"
-english_education$rgn11nm_combined[english_education$rgn11nm == "North West"] <- "North West"
-
-english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
-english_education$rgn11nm_combined <- factor(english_education$rgn11nm_combined)
-
-english_education$rgn11nm_combined <- relevel(english_education$rgn11nm_combined, ref = "South")
-
-
 #Residual Plot
 ggplot(m1, aes(x = .fitted, y = .resid)) + 
   geom_point() + 
@@ -123,9 +92,7 @@ ggplot(m1, aes(x = .fitted, y = .resid)) +
   labs(x = "Fitted (predicted) value", y = "Residual", title = "Linearity looks great except at endpoints, Constant variance looks sufficient") + 
   theme_bw()
 
-
 m1_aug <- augment(m1)
-
 
 #QQ Plot
 ggplot(m1, aes(sample = .resid)) +
@@ -138,9 +105,12 @@ ggplot(m1, aes(sample = .resid)) +
 #Our custom method of assessing constant variance - splitting into even intervals, calculating variance of each, and comparing.
 quantiles <- quantile(m1_aug$.fitted, probs = seq(0, 1, by = 0.2))
 
-variance_intervals_df <- data.frame(interval = character(0), variance = numeric(0))
+variance_intervals_df <- data.frame(
+  interval = character(0), 
+  variance = numeric(0))
 
-for (i in 1:(length(quantiles) - 1)) {
+#Generating individual variance dataframe
+for (i in 1:5) {
   subset_data <- m1_aug %>%
     filter(.fitted >= quantiles[i] & .fitted < quantiles[i + 1])
   
@@ -151,14 +121,13 @@ for (i in 1:(length(quantiles) - 1)) {
                            data.frame(interval=interval_name,
                            variance=variance_value))
 }
-
 print(variance_intervals_df)
 
 #Formal test for constant variance
 bptest_result <- bptest(m1)
-
 print(bptest_result)
 
+#Calculating mean and standard deviation of residuals
 resid_mean <- mean(m1_aug$.resid, na.rm = TRUE)
 resid_sd <- sd(m1_aug$.resid, na.rm = TRUE)
 
@@ -179,31 +148,65 @@ ggplot(m1_aug, aes(x = .resid)) +
 ```
 
 ```{r}
-#Finding min and max values taken on by variables, columns of the datasaet.
-min_max_education_score <- english_education %>%
+#| label: Min-max-variable-values
+
+##Finding min and max values taken on by dataset variables
+
+#Education score
+min_max_education_score <- english_education |>
   summarise(min_education_score = min(education_score, na.rm = TRUE),
             max_education_score = max(education_score, na.rm = TRUE))
 
-min_max_population_2011 <- english_education %>%
+#Population
+min_max_population_2011 <- english_education |>
   summarise(min_population_2011 = min(population_2011, na.rm = TRUE),
             max_population_2011 = max(population_2011, na.rm = TRUE))
 
-min_max_highest_qualification <- english_education %>%
-  summarise(min_highest_qualification = min(highest_level_qualification_achieved_b_age_22_average_score, na.rm = TRUE),
-            max_highest_qualification = max(highest_level_qualification_achieved_b_age_22_average_score, na.rm = TRUE))
+#Highest qualification
+min_max_highest_qualification <- english_education |>
+  summarise(
+    min_highest_qualification = min(
+      highest_level_qualification_achieved_b_age_22_average_score, 
+      na.rm = TRUE
+      ),
+    max_highest_qualification = max(
+      highest_level_qualification_achieved_b_age_22_average_score, 
+      na.rm = TRUE
+      )
+    )
 
-min_max_level_3_age_18 <- english_education %>%
+#Prop. of key stage 4 cohorts at level 3 at age 18
+min_max_level_3_age_18 <- english_education |>
   summarise(min_level_3_age_18 = min(level_3_at_age_18, na.rm = TRUE),
             max_level_3_age_18 = max(level_3_at_age_18, na.rm = TRUE))
 
-min_max_activity_age_19 <- english_education %>%
-  summarise(min_activity_age_19 = min(activity_at_age_19_employment_with_earnings_above_10_000, na.rm = TRUE),
-            max_activity_age_19 = max(activity_at_age_19_employment_with_earnings_above_10_000, na.rm = TRUE))
+#Prop. of key stage 4 cohort with earnings above 10K at age 19
+min_max_activity_age_19 <- english_education |>
+  summarise(
+    min_activity_age_19 = min(
+      activity_at_age_19_employment_with_earnings_above_10_000,
+      na.rm = TRUE
+      ),
+    max_activity_age_19 = max(
+      activity_at_age_19_employment_with_earnings_above_10_000, 
+      na.rm = TRUE
+      )
+    )
 
-min_max_key_stage_4 <- english_education %>%
-  summarise(min_key_stage_4 = min(key_stage_4_attainment_school_year_2012_to_2013, na.rm = TRUE),
-            max_key_stage_4 = max(key_stage_4_attainment_school_year_2012_to_2013, na.rm = TRUE))
+#Prop. of students achieving 5 GSCE or more in school year 2012-2013
+min_max_key_stage_4 <- english_education |>
+  summarise(
+    min_key_stage_4 = min(
+      key_stage_4_attainment_school_year_2012_to_2013, 
+      na.rm = TRUE
+      ),
+    max_key_stage_4 = max(
+      key_stage_4_attainment_school_year_2012_to_2013, 
+      na.rm = TRUE
+      )
+    )
 
+#Combining minimums and maximums of all variables
 min_max_df <- bind_rows(
   min_max_education_score,
   min_max_population_2011,
@@ -217,19 +220,26 @@ print(min_max_df)
 ```
 
 ```{r}
+
+#Creating dataframe for pair plot
 edu_pairs <- english_education |> 
   select(
     activity_at_age_19_full_time_higher_education,
     highest_level_qualification_achieved_b_age_22_average_score,
     level_3_at_age_18, 
     key_stage_4_attainment_school_year_2012_to_2013) |> 
-  mutate()
+  rename(fulltime_higher_ed = activity_at_age_19_full_time_higher_education, 
+         level_3 = level_3_at_age_18,
+         attainment = key_stage_4_attainment_school_year_2012_to_2013,
+         qualification = highest_level_qualification_achieved_b_age_22_average_score)
 
-pairs(edu_pairs[, 1:4], main = "Pairs Plot of Iris Data")
+#Creating pair plot
+pairs(edu_pairs[, 1:4], main = "Pairs Plot of Continuous Variables - No Significant Multicollinearity", col = "#012169")
 
+#Creating bar graph of variable distribution
 ggplot(english_education, aes(x = factor(rgn11nm_combined))) +
-  geom_bar() +
+  geom_bar(fill = "#012169") +
   labs(x = "Region (rgn11nm_combined)", y = "Count", title = "Relative Distributions of New Regions") +
-  theme_bw(color = "") 
+  theme_bw() 
   
 ```
