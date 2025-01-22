@@ -222,10 +222,10 @@ resid_sd <- sd(m1_aug$.resid, na.rm = TRUE)
 #Histogram compared to normal distribution
 ggplot(m1_aug, aes(x = .resid)) + 
   geom_histogram(aes(y = ..density..), 
-                 fill = "deepskyblue", color = "darkblue", bins = 30) + 
+                 fill = "lightblue", color = "blue4", bins = 30) + 
   stat_function(fun = dnorm, 
                 args = list(mean = resid_mean, sd = resid_sd),
-                color = "darkred", lwd = 2) +
+                color = "darkred", lwd = 1) +
   labs(x = "Residual", y = "Density", title = "Symmetric tails and great fit to normal distribution") + 
   theme_bw()
 ```
